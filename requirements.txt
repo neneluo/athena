@@ -15,3 +15,5 @@ inflect
 urllib
 tempfile
 https://github.com/kpu/kenlm/archive/master.zip
+scipy
+sklearn

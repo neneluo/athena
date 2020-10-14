@@ -1,11 +1,12 @@
 {
-  "batch_size":128,
-  "num_epochs":300,
-  "sorta_epoch":1,
+  "batch_size":32,
+  "num_epochs":50,
+  "sorta_epoch":0,
   "ckpt":"examples/speaker_identification/voxceleb/ckpts/speaker_resnet/",
   "summary_dir":"examples/speaker_identification/voxceleb/ckpts/speaker_resnet/event",
 
   "solver_gpu":[],
+  "solver_type": "speaker_classification",
   "solver_config":{
     "clip_norm":100,
     "log_interval":10,
@@ -16,33 +17,41 @@
   "num_classes":null,
   "pretrained_model":null,
   "model_config":{
-    "task":"speaker_identification",
-    "hidden_size":512,
-    "num_filters":[64, 128, 256, 512],
+    "num_speakers":1251,
+    "hidden_size":128,
+    "num_filters":[16, 32, 64, 128],
     "num_layers":[3, 4, 6, 3],
-    "loss":"amsoftmax",
+    "loss":"softmax",
     "margin":0.2,
     "scale":30
   },
 
-  "optimizer":"warmup_adam",
+  "optimizer":"decay_sgd",
   "optimizer_config":{
-    "d_model":512,
-    "warmup_steps":4000,
-    "k":5
+    "momentum": 0.9,
+    "nesterov": true,
+    "lr_decay_boundaries": [20000, 30000],
+    "lr_decay_values": [0.1, 0.01, 0.001]
+  },
+
+  "inference_config":{
+    "model_avg_num":1
   },
 
   "dataset_builder":"speaker_recognition_dataset",
   "num_data_threads":1,
   "trainset_config":{
-      "data_csv":"examples/speaker_identification/voxceleb/data/vox1_iden_train.csv",
+      "data_csv":"examples/speaker_identification/voxceleb/data/train.csv",
       "audio_config":{"type":"Fbank", "filterbank_channel_count":40},
-      "cmvn_file":"examples/speaker_identification/voxceleb/data/cmvn",
+      "cut_frame":[200, 1000],
       "input_length_range":[10, 20000]
   },
   "devset_config":{
-    "data_csv":"examples/speaker_identification/voxceleb/data/vox1_iden_test.csv",
-    "audio_config":{"type":"Fbank", "filterbank_channel_count":40},
-    "cmvn_file":"examples/speaker_identification/voxceleb/data/cmvn"
+    "data_csv":"examples/speaker_identification/voxceleb/data/dev.csv",
+    "audio_config":{"type":"Fbank", "filterbank_channel_count":40}
+  },
+  "testset_config":{
+    "data_csv":"examples/speaker_identification/voxceleb/data/test.csv",
+    "audio_config":{"type":"Fbank", "filterbank_channel_count":40}
   }
 }

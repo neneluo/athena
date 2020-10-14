@@ -17,6 +17,7 @@
 
 import tensorflow as tf
 from athena.transform import feats
+import kaldiio
 
 
 class AudioFeaturizer:
@@ -74,12 +75,16 @@ class AudioFeaturizer:
             - output: see the docs in the feature class.
         """
 
+        """
         if audio is not None and not tf.is_tensor(audio):
             audio = tf.convert_to_tensor(audio)
         if sr is not None and not tf.is_tensor(sr):
             sr = tf.convert_to_tensor(sr)
 
         return self.__impl(audio, sr, speed)
+        """
+        feat = tf.convert_to_tensor(kaldiio.load_mat(audio))
+        return feat
 
     @tf.function
     def __impl(self, audio=None, sr=None, speed=1.0):

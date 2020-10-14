@@ -27,7 +27,7 @@ from athena.main import (
     SUPPORTED_DATASET_BUILDER
 )
 from athena.stargan_main import build_model_from_jsonfile_stargan
-from athena import BaseSolver, DecoderSolver, SynthesisSolver, HorovodSolver, ConvertSolver
+from athena import BaseSolver, DecoderSolver, SynthesisSolver, HorovodSolver, ConvertSolver, SpeakerSolver
 
 try:
     import horovod.tensorflow as hvd
@@ -39,12 +39,13 @@ SOLVERS = {
     "asr": DecoderSolver,
     "tts": SynthesisSolver,
     "vc": ConvertSolver,
+    "speaker_classification": SpeakerSolver
 }
 
 def inference(jsonfile, config, rank_size=1, rank=0):
     """ entry point for model inference, do some preparation work """
     if config.solver_type == 'vc':
-        p, model, checkpointer = build_model_from_jsonfile_stargan(jsonfile, is_train=False)
+        p, model, checkpointer = build_model_from_jsonfile_stargan(jsonfile, False)
     else:
         p, model, _, checkpointer = build_model_from_jsonfile(jsonfile)
     avg_num = 1 if 'model_avg_num' not in p.inference_config else p.inference_config['model_avg_num']
